@@ -17,6 +17,7 @@ public class ScoreManager : MonoBehaviour
     {
         scoreManager = this;
         highScore = PlayerPrefs.GetInt("highscore");
+        UpdateText();
     }
 
     void UpdateText()

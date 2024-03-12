@@ -20,15 +20,27 @@ public class EnemySpawner : MonoBehaviour
     private int direction; // 1 for right or -1 for left
     public float step;
     private float initialEnemyNumber;
-    
+
+    private Vector3 startPos;
+    private bool isRespawning;
 
     private void Start()
     {
+        if (startPos == new Vector3())
+        {
+            startPos = this.transform.position;
+        }
+        else
+        {
+            transform.position = startPos;
+        }
+        
         moveCount = rowMoveAmount / 2;
         direction = 1;
         enemies = new List<GameObject>();
         cycleTimer = cycleTime;
         float yOffset = 0;
+        isRespawning = false;
         for (int i = 0; i < rowCount; i++)
         {
             float start = (float)(transform.position.x - 0.5 * (distanceBetweenEachEnemy) * (columnCount-1));
@@ -54,6 +66,11 @@ public class EnemySpawner : MonoBehaviour
         {
             Debug.Log("move");
             Move();
+            if (enemies.Count == 0 && !isRespawning)
+            {
+                isRespawning = true;
+                StartCoroutine(Respawn());
+            }
         }
     }
 
@@ -77,5 +94,11 @@ public class EnemySpawner : MonoBehaviour
 
         int enemyNumber = enemies.Count;
         cycleTimer = enemyNumber / initialEnemyNumber * cycleTime + (1-enemyNumber/initialEnemyNumber) * maxCycletime;
+    }
+
+    private IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds(3f);
+        Start();
     }
 }

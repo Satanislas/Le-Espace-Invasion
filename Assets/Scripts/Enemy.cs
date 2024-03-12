@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
     private float shootTimer;
     public float shootProbability;
     public Transform shottingOffset;
+
+    public AudioSource shootSound;
+    public AudioSource deathSound;
     
 
     private void Start()
@@ -36,10 +39,12 @@ public class Enemy : MonoBehaviour
 
     void Shoot()
     {
+        
         if ((int)Random.Range(1,1/shootProbability) == 1)
         {
+            anim.SetTrigger("Fire");
+            shootSound.Play();
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
-      
             Destroy(shot, 3f);
         }
         shootTimer = shootTime;
@@ -57,6 +62,7 @@ public class Enemy : MonoBehaviour
     void Death()
     {
         anim.SetTrigger("Death");
+        deathSound.Play();
         
         //calls because I don't get how event works (and it's resource-consuming to change habits)
         EnemySpawner.enemies.Remove(gameObject);
